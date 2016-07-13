@@ -19,7 +19,7 @@ namespace SampleJanken
                 string input = Console.ReadLine();
                 if (!int.TryParse(input, out playersCount))
                 {
-                    Console.WriteLine("数値化できない入力でしたのでやり直します");
+                    Console.WriteLine("え？何人だって？？？");
                 }
             } while (playersCount < 2);
 

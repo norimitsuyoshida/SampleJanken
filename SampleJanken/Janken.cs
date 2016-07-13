@@ -41,7 +41,7 @@ namespace SampleJanken
             IsAiko = !Match();  // 勝負！
             if (IsAiko) return true;
 
-            Console.Write("終わりますか？（y[es]|[n[o]]） >>> ");
+            Console.Write("終わりますか？（y[es]） >>> ");
             string input = Console.ReadLine();
             if (0 == string.Compare(input, "yes", true) || 0 == string.Compare(input, "y", true))
                 return false;
