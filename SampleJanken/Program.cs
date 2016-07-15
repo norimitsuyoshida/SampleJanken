@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="Program.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace SampleJanken
 {
-    class Program
+    using System;
+
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // 人数
             int playersCount = 0;
@@ -21,11 +21,15 @@ namespace SampleJanken
                 {
                     Console.WriteLine("え？何人だって？？？");
                 }
-            } while (playersCount < 2);
+            }
+            while (playersCount < 2);
 
             // じゃんけん
             Janken janken = new Janken(playersCount);
-            while (janken.Play());
+            while (janken.Play())
+            {
+            }
+
             janken.Result();
             Console.WriteLine("Press any keys.");
             Console.Read();

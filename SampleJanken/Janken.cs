@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="Janken.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace SampleJanken
 {
-    class Janken
-    {
-        private List<IPlayer> Players { get; set; }
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
 
+    internal class Janken
+    {
         public Janken(int playerCount)
         {
             Players = new List<IPlayer>(playerCount);
@@ -18,8 +20,11 @@ namespace SampleJanken
             {
                 Players.Add(new ComPlayer(string.Format("ＣＯＭ{0}", i)));
             }
+
             IsAiko = false;
         }
+
+        private List<IPlayer> Players { get; set; }
 
         private bool IsAiko { get; set; }
 
@@ -35,16 +40,23 @@ namespace SampleJanken
             }
             else
             {
-                Console.WriteLine("");
+                Console.WriteLine(string.Empty);
             }
+
             Console.WriteLine(!IsAiko ? "じゃんけん！！！" : "あいこで！！！");
             IsAiko = !Match();  // 勝負！
-            if (IsAiko) return true;
+            if (IsAiko)
+            {
+                return true;
+            }
 
             Console.Write("終わりますか？（y[es]） >>> ");
             string input = Console.ReadLine();
-            if (0 == string.Compare(input, "yes", true) || 0 == string.Compare(input, "y", true))
+            if (string.Compare(input, "yes", true) == 0 || string.Compare(input, "y", true) == 0)
+            {
                 return false;
+            }
+
             return true;
         }
 
@@ -53,12 +65,16 @@ namespace SampleJanken
         /// </summary>
         public void Result()
         {
-            Console.WriteLine("");
+            Console.WriteLine(string.Empty);
             Console.WriteLine("成績");
             foreach (var player in Players)
             {
-                Console.WriteLine(string.Format("{0} = {1} Win, {2} Loss, {3:0.00}%",
-                    player.Name, player.WinCount, player.LossCount, player.Average()));
+                Console.WriteLine(string.Format(
+                    "{0} = {1} Win, {2} Loss, {3:0.00}%",
+                    player.Name,
+                    player.WinCount,
+                    player.LossCount,
+                    player.Average()));
             }
         }
 
@@ -68,7 +84,7 @@ namespace SampleJanken
         /// <returns>true=決着, false=未決（あいこ）</returns>
         private bool Match()
         {
-            var hands = new JankenHand();
+            var hands = default(JankenHand);
             var playerHands = new Dictionary<IPlayer, JankenHand>();
 
             // じゃんけんプレイヤーの手を出す
@@ -88,11 +104,16 @@ namespace SampleJanken
 
             // 勝ち手判定
             JankenHand winHand = GetWinHand(hands);
-            if (winHand == JankenHand.Unknown) return false;    // あいこなのでfalseを返す
+            if (winHand == JankenHand.Unknown)
+            {
+                return false;    // あいこなのでfalseを返す
+            }
 
             // Win Loss 付けと表示
             foreach (var playerHand in playerHands)
             {
+                Console.WriteLine(string.Empty);
+
                 if (playerHand.Value == winHand)
                 {
                     playerHand.Key.Win();
@@ -105,8 +126,10 @@ namespace SampleJanken
                     playerHand.Key.Loss();
                     Console.WriteLine(string.Format("{0} Ｌｏｓｓ！", playerHand.Key.Name));
                 }
+
                 Console.ResetColor();
             }
+
             return true;
         }
 
@@ -115,12 +138,16 @@ namespace SampleJanken
         /// </summary>
         /// <typeparam name="T">フラグ型</typeparam>
         /// <param name="target">数えたいフラグ</param>
-        /// <returns></returns>
-        private UInt32 BitOnCount<T>(T target)
+        /// <returns>ビットオン数を返す</returns>
+        private uint BitOnCount<T>(T target)
             where T : IConvertible
         {
-            if (default(T) == null) return 0; // 数値型以外は０を返す
-            UInt32 flg = Convert.ToUInt32(target);
+            if (default(T) == null)
+            {
+                return 0; // 数値型以外は０を返す
+            }
+
+            uint flg = Convert.ToUInt32(target);
 
             var x = flg - ((flg >> 1) & 0x55555555);
             x = ((x >> 2) & 0x33333333) + (x & 0x33333333);
@@ -132,12 +159,14 @@ namespace SampleJanken
         /// <summary>
         /// 勝ち手を返す。
         /// </summary>
-        /// <param name="hands"></param>
+        /// <param name="hands">出し手フラグ</param>
         /// <returns>Unknownの場合勝ち手無し＝あいこ</returns>
         private JankenHand GetWinHand(JankenHand hands)
         {
-            var handTypeCount = BitOnCount((int)hands);
-            if (handTypeCount == 3 || handTypeCount == 1)   // ３種または１種の手
+            var handTypeCount = BitOnCount(hands);
+
+            // ３種または１種の手
+            if (handTypeCount == 3 || handTypeCount == 1)
             {
                 return JankenHand.Unknown;   // あいこなので勝ち手無し
             }
@@ -153,6 +182,7 @@ namespace SampleJanken
                     return JankenHand.Paa;
                 }
             }
+
             return JankenHand.Choki;
         }
     }
